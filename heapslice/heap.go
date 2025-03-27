@@ -121,9 +121,8 @@ func (h *Heap[V]) BinarySearch(target V, compareFn func(a V, b V) int) func(yiel
 			if !found {
 				if i == 0 {
 					yield(-1, false)
-				} else {
-					return
 				}
+				return
 			}
 
 			if !yield(nextIndex+i, true) {
@@ -137,7 +136,7 @@ func (h *Heap[V]) BinarySearch(target V, compareFn func(a V, b V) int) func(yiel
 
 // DeleteElement Удаление элемента по индексу
 func (h *Heap[V]) DeleteElement(idx int) {
-	if idx < h.Len() {
+	if idx < h.Len() && idx > 0 {
 		heap.Remove(h, idx)
 	}
 }
