@@ -3,6 +3,7 @@ package heapslice_test
 import (
 	"fmt"
 	"github.com/Genry72/helper/heapslice"
+	"strings"
 )
 
 type Item struct {
@@ -52,13 +53,7 @@ func ExampleHeap() {
 	var orangeIdx int
 
 	for idx, ok := range h2.BinarySearch(Item{value: "orange"}, func(a Item, b Item) int {
-		if a.value == b.value {
-			return 0
-		}
-		if a.value < b.value {
-			return -1
-		}
-		return 1
+		return strings.Compare(a.value, b.value)
 	}) {
 		if !ok {
 			panic("orange not fount") // !!! не использовать в проде)

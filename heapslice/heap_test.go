@@ -44,13 +44,7 @@ func TestHeap_BinarySearch(t *testing.T) {
 			args: args[testStr]{
 				target: testStr{"1", 0},
 				compareFn: func(a testStr, b testStr) int {
-					if a.name == b.name {
-						return 0
-					}
-					if a.name < b.name {
-						return -1
-					}
-					return 1
+					return a.priority - b.priority
 				},
 			},
 			want: []int{0, 1, 2},
@@ -76,13 +70,7 @@ func TestHeap_BinarySearch(t *testing.T) {
 			args: args[testStr]{
 				target: testStr{"", 2},
 				compareFn: func(a testStr, b testStr) int {
-					if a.priority == b.priority {
-						return 0
-					}
-					if a.priority < b.priority {
-						return -1
-					}
-					return 1
+					return a.priority - b.priority
 				},
 			},
 			want: []int{1},
@@ -108,13 +96,7 @@ func TestHeap_BinarySearch(t *testing.T) {
 			args: args[testStr]{
 				target: testStr{"", 2},
 				compareFn: func(a testStr, b testStr) int {
-					if a.priority == b.priority {
-						return 0
-					}
-					if a.priority < b.priority {
-						return -1
-					}
-					return 1
+					return a.priority - b.priority
 				},
 			},
 			want: []int{1, 2},
@@ -140,13 +122,7 @@ func TestHeap_BinarySearch(t *testing.T) {
 			args: args[testStr]{
 				target: testStr{"", 4},
 				compareFn: func(a testStr, b testStr) int {
-					if a.priority == b.priority {
-						return 0
-					}
-					if a.priority < b.priority {
-						return -1
-					}
-					return 1
+					return a.priority - b.priority
 				},
 			},
 			want: []int{},
@@ -172,13 +148,7 @@ func TestHeap_BinarySearch(t *testing.T) {
 			args: args[testStr]{
 				target: testStr{"", 0},
 				compareFn: func(a testStr, b testStr) int {
-					if a.priority == b.priority {
-						return 0
-					}
-					if a.priority < b.priority {
-						return -1
-					}
-					return 1
+					return a.priority - b.priority
 				},
 			},
 			want: []int{},
