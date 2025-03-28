@@ -8,6 +8,11 @@ import (
 	"testing"
 )
 
+type myStrct struct {
+	name string
+	age  int
+}
+
 func TestNewFromSliceInts(t *testing.T) {
 	type testCase[K comparable, V any] struct {
 		name string
@@ -58,11 +63,6 @@ func TestNewFromSliceInts(t *testing.T) {
 }
 
 func TestOtherStruct(t *testing.T) {
-	type myStrct struct {
-		name string
-		age  int
-	}
-
 	sl := []myStrct{
 		{"Alice", 30},
 		{"Bob", 25},
@@ -127,4 +127,94 @@ func TestOtherStruct(t *testing.T) {
 		{"Marina", 30},
 		{"Bob", 25},
 	}, resultSl)
+}
+
+func TestHeapMapDelete_ForEach(t *testing.T) {
+	sl := []myStrct{
+		{"Charlie", 35},
+		{"Marina", 30},
+		{"Bob", 25},
+	}
+
+	getHeap := func() *heapmap.HeapMap[int, myStrct] {
+		return heapmap.NewFromSlice[int, myStrct](sl, func(v myStrct) (int, myStrct) {
+			return v.age, v
+		}, func(k1, k2 int) bool {
+			return k1 < k2
+		})
+	}
+
+	type args struct {
+		fnDelete func(int, *heapmap.HeapMap[int, myStrct])
+	}
+
+	type testCase struct {
+		name string
+		args args
+		want []myStrct
+	}
+	tests := []testCase{
+		{
+			name: "delete all",
+			args: args{
+				fnDelete: func(i int, v *heapmap.HeapMap[int, myStrct]) {
+					v.DeleteElement(i)
+				},
+			},
+			want: []myStrct{},
+		},
+		{
+			name: "delete Marina",
+			args: args{
+				fnDelete: func(i int, v *heapmap.HeapMap[int, myStrct]) {
+					if i == 30 {
+						v.DeleteElement(i)
+					}
+				},
+			},
+			want: []myStrct{
+				{"Bob", 25},
+				{"Charlie", 35},
+			},
+		},
+		{
+			name: "delete Marina and Bob",
+			args: args{
+				fnDelete: func(i int, v *heapmap.HeapMap[int, myStrct]) {
+					if i == 30 || i == 25 {
+						v.DeleteElement(i)
+					}
+				},
+			},
+			want: []myStrct{
+				{"Charlie", 35},
+			},
+		},
+		{
+			name: "просто итерация",
+			args: args{
+				fnDelete: func(i int, v *heapmap.HeapMap[int, myStrct]) {},
+			},
+			want: []myStrct{
+				{"Bob", 25},
+				{"Marina", 30},
+				{"Charlie", 35},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			h := getHeap()
+			for k, v := range h.Iter() {
+				_ = v
+				tt.args.fnDelete(k, h)
+			}
+			actual := make([]myStrct, 0)
+			for h.Len() != 0 {
+				v, _ := h.PopElement()
+				actual = append(actual, v.Value)
+			}
+			assert.Equal(t, tt.want, actual)
+		})
+	}
 }

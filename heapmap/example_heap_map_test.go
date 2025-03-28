@@ -25,11 +25,18 @@ func ExampleHeapMap() {
 	fmt.Println(el.Key, el.Value)
 
 	// Проход по всем элементам, оставляя в куче
-	for k, v := range h.ForEach() {
-		fmt.Printf("%s:%.2d ", k, v)
+	for h.Len() > 0 {
+		item, _ := h.PopElement()
+		fmt.Printf("%s:%.2d\n", item.Key, item.Value)
 	}
+
+	fmt.Println(h.Len())
 
 	// Output:
 	// apple 2
-	// apple:02 banana:03 orange:05 pear:04
+	// apple:02
+	// banana:03
+	// orange:05
+	// pear:04
+	// 0
 }

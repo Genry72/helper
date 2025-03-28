@@ -147,15 +147,21 @@ func (h *HeapMap[K, V]) Fix(i int) {
 	heap.Fix(h, i)
 }
 
-// ForEach Итерация согласно порядку Less. Происходит сортировка всего массива функцией Less
-func (h *HeapMap[K, V]) ForEach() func(yield func(K, V) bool) {
-	h.Sort()
-	keys := h.getKeys()
+// Iter Итерация по всем элементам. Сортировка не гарантируется. Вызоаите дополнительно метод Sort либо
+// используйте PopElement
+func (h *HeapMap[K, V]) Iter() func(yield func(K, V) bool) {
+	oldLen := h.Len()
+
 	return func(yield func(K, V) bool) {
-		for i := range keys {
-			val, _ := h.GetElement(keys[i])
-			if !yield(val.Key, val.Value) {
+		for i := 0; i < h.Len(); i++ {
+			if !yield(h.heap[i].Key, h.heap[i].Value) {
 				return
+			}
+
+			// В случае удаления элемента
+			if oldLen != h.Len() {
+				oldLen = h.Len()
+				i--
 			}
 		}
 	}
@@ -186,13 +192,4 @@ func (h *HeapMap[K, V]) Sort() {
 		sort.Sort(h)
 		h.isSorted = true
 	}
-}
-
-// getKeys Возвращает все ключи
-func (h *HeapMap[K, V]) getKeys() []K {
-	res := make([]K, 0, h.Len())
-	for i := 0; i < h.Len(); i++ {
-		res = append(res, h.heap[i].Key)
-	}
-	return res
 }
