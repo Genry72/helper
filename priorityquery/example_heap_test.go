@@ -1,4 +1,4 @@
-package heapslice_test
+package priorityquery_test
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func ExampleHeap() {
 		"banana": 3, "apple": 2, "pear": 4,
 	}
 
-	h := heapslice.NewHeap[Item](len(items), func(a, b Item) bool {
+	h := priorityquery.NewHeap[Item](len(items), func(a, b Item) bool {
 		return a.priority > b.priority
 	})
 	for name, priority := range items {
@@ -32,7 +32,7 @@ func ExampleHeap() {
 		priority: 1,
 	})
 
-	h2 := heapslice.NewHeap[Item](h.Len(), func(a, b Item) bool {
+	h2 := priorityquery.NewHeap[Item](h.Len(), func(a, b Item) bool {
 		return a.priority > b.priority
 	})
 
@@ -66,8 +66,11 @@ func ExampleHeap() {
 		priority: 100,
 	})
 
-	// Проход по всем элементам, оставляя в куче. Применяется основная сортировка по приоритету
-	for _, v := range h2.ForEach() {
+	// Применяем исходную сортировку
+	h2.Sort()
+
+	// Проход по всем элементам, оставляя в куче. Здесь сортировка на гарантируется
+	for _, v := range h2.Iter() {
 		fmt.Printf("%s:%.2d\n", v.value, v.priority)
 	}
 

@@ -1,10 +1,14 @@
-package heapslice
+package priorityquery
 
 import (
 	"container/heap"
 	"slices"
 	"sort"
 )
+
+/*
+Приоритетная очередь на основе кучи.
+*/
 
 type Heap[V any] struct {
 	heap     []V
@@ -77,24 +81,21 @@ func (h *Heap[V]) Pop() any {
 	return x
 }
 
-// ForEach Итерация согласно порядку Less. Происходит сортировка всего массива функцией Less
-func (h *Heap[V]) ForEach() func(yield func(int, V) bool) {
-	h.Sort()
+// Iter Итерация по всем элементам. Сортировка не гарантируется. Вызоаите дополнительно метод Sort либо
+// используйте PopElement
+func (h *Heap[V]) Iter() func(yield func(int, V) bool) {
+	oldLen := h.Len()
+
 	return func(yield func(int, V) bool) {
-		for i := range h.heap {
+		for i := 0; i < h.Len(); i++ {
 			if !yield(i, h.heap[i]) {
 				return
 			}
-		}
-	}
-}
 
-// Iter итерация по массиву, сортировка не гарантирована
-func (h *Heap[V]) Iter() func(yield func(int, V) bool) {
-	return func(yield func(int, V) bool) {
-		for i := range h.heap {
-			if !yield(i, h.heap[i]) {
-				return
+			// В случае удаления элемента
+			if oldLen != h.Len() {
+				oldLen = h.Len()
+				i--
 			}
 		}
 	}
@@ -102,7 +103,8 @@ func (h *Heap[V]) Iter() func(yield func(int, V) bool) {
 
 /*
 BinarySearch Убедитесь что куча отсортирована в порядке возрастания (либо измените приведенный пример ниже),
-по нужному ключу (вызовите метод Sort) иначе воспользуйтесь линейным поиском используя Iter, либо отсортируйте массив по другому принципу, используя метод SortByOtherFn
+по нужному ключу (вызовите метод Sort) иначе воспользуйтесь линейным поиском используя Iter, либо отсортируйте массив
+по другому принципу, используя метод SortByOtherFn
 
 return a.priority - b.priority Для возрастающей последовательности int
 return strings.Compare(a.value, b.value) Для возрастающей последовательности строк
@@ -139,7 +141,7 @@ func (h *Heap[V]) BinarySearch(target V, compareFn func(a V, b V) int) func(yiel
 
 // DeleteElement Удаление элемента по индексу
 func (h *Heap[V]) DeleteElement(idx int) {
-	if idx < h.Len() && idx > 0 {
+	if idx < h.Len() && idx >= 0 {
 		heap.Remove(h, idx)
 	}
 }

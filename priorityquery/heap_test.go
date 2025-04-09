@@ -1,4 +1,4 @@
-package heapslice
+package priorityquery
 
 import (
 	"github.com/stretchr/testify/assert"
