@@ -1,4 +1,4 @@
-module github.com/Genry72/helper/heapslice
+module github.com/Genry72/helper/priorityquery
 
 go 1.24.2
 

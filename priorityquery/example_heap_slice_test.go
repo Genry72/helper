@@ -2,7 +2,7 @@ package priorityquery_test
 
 import (
 	"fmt"
-	"github.com/Genry72/helper/heapslice"
+	"github.com/Genry72/helper/priorityquery"
 )
 
 type Items struct {
