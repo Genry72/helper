@@ -5,7 +5,7 @@ import (
 	"github.com/Genry72/helper/heapmap"
 )
 
-func ExampleHeapMapSlice() {
+func ExampleNewHeapMap() {
 	type myStruct struct {
 		froutName string
 		id        int

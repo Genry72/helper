@@ -10,7 +10,7 @@ type Items struct {
 	priority int
 }
 
-func ExampleHeapFromSlice() {
+func ExampleNewFromSlice() {
 	// Cписок продуктов и их приоритеты
 	items := []*Items{
 		{
@@ -49,7 +49,7 @@ func ExampleHeapFromSlice() {
 	// orange:01
 }
 
-func ExampleHeapDeleteElemInIter() {
+func ExampleNewHeap() {
 	// Cписок продуктов и их приоритеты
 	items := []int{}
 
